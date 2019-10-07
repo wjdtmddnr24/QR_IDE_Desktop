@@ -21,6 +21,7 @@
     "publish": null
   },
   "scripts": {
+    "css-build": "node-sass app/bulma/bulma.sass app/bulma/css/bulma.css",
     "postinstall": "electron-builder install-app-deps",
     "preunit": "webpack --config=build/webpack.unit.config.js --env=test --display=none",
     "unit": "electron-mocha temp/specs.js --renderer --require source-map-support/register",
@@ -45,6 +46,7 @@
     "electron-mocha": "^8.1.1",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "mocha": "^6.2.0",
+    "node-sass": "^4.12.0",
     "source-map-support": "^0.5.6",
     "spectron": "^6.0.0",
     "style-loader": "^0.23.1",
