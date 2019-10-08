@@ -5,6 +5,7 @@ var themeSubmenu = [];
 themes.forEach(function (theme) {
   themeSubmenu.push({
     label: theme, click: () => {
+      //TODO 화이트/다크테마로만 구분하기
       BrowserWindow.getFocusedWindow().webContents.executeJavaScript(`editor.setTheme("ace/theme/${theme}");`);
     }
   });

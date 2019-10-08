@@ -15,6 +15,7 @@ import env from "env";
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
 
+
 // Holy crap! This is browser window with HTML and stuff, but I can read
 // files from disk like it's node.js! Welcome to Electron world :)
 /*

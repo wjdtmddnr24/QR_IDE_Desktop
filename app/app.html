@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bulma/css/bulma.css">
+  <script>window.$ = window.jQuery = require('jquery');</script>
   <script defer src="fontawesome/js/all.js"></script>
   <title>Sough - Easy share, Easy learn</title>
   <style type="text/css" media="screen">
@@ -25,44 +26,102 @@
       padding: 1.5rem 1.5rem 3rem 1.5rem;
     }
 
+    .section2 {
+      padding: 1.5rem 1.5rem 3rem 1.5rem;
+    }
+
     /* .ace-terminal-theme*/
   </style>
 </head>
 <body>
 <div id="app" style="">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://bulma.io">
+        <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+         data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item">
+          Home
+        </a>
+
+        <a class="navbar-item">
+          Documentation
+        </a>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            More
+          </a>
+
+          <div class="navbar-dropdown">
+            <a class="navbar-item">
+              About
+            </a>
+            <a class="navbar-item">
+              Jobs
+            </a>
+            <a class="navbar-item">
+              Contact
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item">
+              Report an issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-primary">
+              <strong>Sign up</strong>
+            </a>
+            <a class="button is-light">
+              Log in
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
   <div class="columns">
-    <aside class="is-fullheight sidebar is-unselectable" style="width: 240px;overflow-x: auto">
-      <p class="menu-label">작업 공간</p>
-      <ul class="menu-list ">
-        <li>
-          <a href="#" class="is-active" style="word-wrap:break-word;">
-            <span class="icon"><i class="fas fa-cloud"></i></span>&nbsp; In workspace</a>
+    <aside class="is-fullheight section2 is-unselectable" style="width: 240px;overflow-x: auto">
+      <p id="cur_workspace_name" class="menu-label">작업 공간</p>
+      <ul id="sough_workspace" class="menu-list">
+        <!-- <li>
+           <a href="#" class="is-active" style="word-wrap:break-word;">
+             <span class="icon"><i class="fas fa-cloud"></i></span>&nbsp; In workspace</a>
 
-        </li>
-        <li>
-          <a href="#" class="" style="word-wrap:break-word;"> <span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;
-            In workspace</a>
+         </li>
+         <li>
+           <a href="#" class="" style="word-wrap:break-word;"> <span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;
+             In workspace</a>
 
-        </li>
+         </li>
 
-        <li>
-          <a href="#" class="" style="word-wrap:break-spaces;"> <span class="icon"><i
-            class="fas fa-cloud-upload-alt"></i></span>&nbsp;
-            Is Uploading</a>
-
+         <li>
+           <a href="#" class="" style="word-wrap:break-spaces;"> <span class="icon"><i
+             class="fas fa-cloud-upload-alt"></i></span>&nbsp;
+             Is Uploading</a>
+ -->
         </li>
 
       </ul>
     </aside>
-    <div class="column is-fullheight section" style="overflow-x: hidden;">
-      <div id="editor">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-        enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-        ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.
-      </div>
+    <div class="column is-fullheight section2" style="overflow-x: hidden;">
+      <div id="editor"></div>
     </div>
   </div>
 </div>
@@ -80,6 +139,6 @@
   });
   // editor.session.setMode("ace/mode/javascript");
 </script>
-
+<script src="client.js"></script>
 </body>
 </html>
