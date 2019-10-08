@@ -21,7 +21,17 @@ function init() {
   for (var i in m_userNames) {
     fetch_workspace(m_userNames[i], true);
   }
+}
 
+function openWork(idx) {
+  for (var i in getUser().workspace) {
+    if (getUser().workspace[i].focus) {
+      getUser().workspace[i].focus = false;
+    }
+  }
+  getUser().workspace[idx].focus = true;
+  redrawWorkspace();
+  redrawEditor();
 }
 
 function fetch_workspace(user, overwrite) {
@@ -34,8 +44,9 @@ function fetch_workspace(user, overwrite) {
         m_users[user] = data;
       if (m_curUserName === data.id) {
         invalidateWorkspaceData(data.workspace, true);
-        if (getUser().workspace.length > 0)
-          getUser().workspace[0].focus = true;
+        if (getUser().workspace.length > 0) {
+          openWork(0);
+        }
         redrawWorkspace();
       }
     }
@@ -76,12 +87,15 @@ function redrawWorkspace() {
   $('#sough_workspace li').remove();
   $.each(getUser().workspace, function (index, work) {
     $('#sough_workspace').append(
-      ` <li><a href="#" class="${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}</a></li>`
+      `<li><a href="javascript:openWork(${index})" class="${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}</a></li>`
     );
   });
 }
 
-//TODO redraw editor
+
+function redrawEditor() {
+  editor.setValue(getCurrentWork().content);
+}
 
 $(document).ready(function () {
   console.log("ready!");
@@ -89,7 +103,3 @@ $(document).ready(function () {
 });
 
 
-/*
-
-
-*/
