@@ -36,9 +36,9 @@ app.on("ready", () => {
   setApplicationMenu();
 
   const mainWindow = createWindow("main", {
-    width: 1000,
+    width: 1040,
     height: 600,
-    minWidth: 1000,
+    minWidth: 1040,
     minHeight: 600,
     webPreferences: {
       nodeIntegration: true

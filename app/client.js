@@ -87,18 +87,17 @@ function redrawWorkspace() {
   $('#sough_workspace li').remove();
   $.each(getUser().workspace, function (index, work) {
     $('#sough_workspace').append(
-      `<li><a href="javascript:openWork(${index})" class="${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}</a></li>`
+      `<li><a href="javascript:openWork(${index})" class="sough-work ${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}</a></li>`
     );
   });
 }
 
 
 function redrawEditor() {
-  editor.setValue(getCurrentWork().content);
+  editor.setValue(getCurrentWork().content, -1);
 }
 
 $(document).ready(function () {
-  console.log("ready!");
   init();
 });
 
