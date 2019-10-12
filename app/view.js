@@ -6,6 +6,7 @@ $(document).ready(function () {
   $(document).click(hideWorkContextmenu);
   $('.modal-background').click(closeModal);
   $('#qr-modal-close').click(closeModal);
+  $('.sough-language-item').on('click', setMode);
 });
 
 function closeModal() {
@@ -30,7 +31,23 @@ function shareQR() {
   makeQR(() => {
     $('#qr-modal').addClass('is-active');
   });
+}
+
+var langauge_mode_map = {
+  'Javascript': 'javascript',
+  'Json': 'json',
+  'Java': 'java',
+  'C/C++': 'c_cpp',
+  'Text': ''
+};
 
 
-  // TODO modal 추가
+function setMode(event) {
+  var element = $(event.target);
+  var id = langauge_mode_map[element.text().trim()];
+  id = id ? id : 'text';
+  $('.sough-language-item').removeClass('is-active');
+  $(`#${id}`).addClass('is-active');
+  $('.sough-language-item-title').text(element.text());
+  editor.session.setMode(`ace/mode/${id}`);
 }
