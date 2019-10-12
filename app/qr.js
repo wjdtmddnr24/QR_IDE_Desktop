@@ -2,38 +2,40 @@ let ZXing = require('@zxing/library');
 let Lzma = require('lzma');
 
 // let Buffer = require('buffer').Buffer;
-
-
-function writeQR() {
+function makeQR(callback) {
   var input = editor.getValue();
-  const codeWriter = new ZXing.BrowserQRCodeSvgWriter();
-// you can get a SVG element.
-  const svgElement = codeWriter.write(input, 300, 300);
-// or render it directly to DOM.
-  $('#result').empty();
-  codeWriter.writeToDom('#result', input, 300, 300);
+  compressData(input, (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    writeQR(result, callback);
+  });
 }
 
-function compressData() {
-  var input = editor.getValue();
+
+function writeQR(input, callback) {
+  const codeWriter = new ZXing.BrowserQRCodeSvgWriter();
+  $('#result').empty();
+  var height = $(document).height() - 100;
+  console.log(height);
+  codeWriter.writeToDom('#result', input, height, height);
+  callback();
+}
+
+function compressData(input, callback) {
   Lzma.compress(input, 9, function (result, error) {
     if (error) console.error(error);
-    compressed_result = Buffer.from(result);
-    encoded_string_result = compressed_result.toString('base64');
-    editor.setValue(encoded_string_result);
-    re_buffered_result = Buffer.alloc(encoded_string_result.length, encoded_string_result, 'base64');
-    console.log(re_buffered_result);
-  }, function (percent) {
-
+    var compressed_result = Buffer.from(result);
+    var encoded_string_result = compressed_result.toString('base64');
+    callback(null, encoded_string_result);
   });
 }
 
-function decompressData(data) {
-  var byte_array = Buffer.from(data, 'base64');
+function decompressData(input, callback) {
+  var byte_array = Buffer.from(input, 'base64');
   Lzma.decompress(byte_array, function (result, error) {
-    console.log(result);
+    callback(null, result);
   }, function (percent) {
-
   });
-
 }

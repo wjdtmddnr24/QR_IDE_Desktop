@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="bulma/css/bulma.css">
   <script>window.$ = window.jQuery = require('jquery');</script>
   <script defer src="fontawesome/js/all.js"></script>
-  <title>Sough - Easy share, Easy learn</title>
+  <title>Sough - Easy share, Easy Use</title>
   <style type="text/css" media="screen">
     #editor {
       position: fixed;
@@ -38,12 +38,16 @@
       width: 150px;
     }
 
+    svg {
+      background: white;
+    }
+
     /* .ace-terminal-theme*/
   </style>
 </head>
 <body>
 <div id="app" style="">
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-unselectable" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://bulma.io">
         <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
@@ -62,11 +66,9 @@
         <a class="navbar-item">
           Home
         </a>
-
         <a class="navbar-item">
           Documentation
         </a>
-
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
             Text
@@ -95,14 +97,12 @@
           </div>
         </div>
       </div>
-
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary" href="javascript:writeQR();">
-              <strong>Sign up</strong>
+            <a class="button is-info" href="javascript:shareQR();">
+              <strong>공유하기</strong>
             </a>
-            <a class="button is-light" href="javascript:compressData();"> Log in </a>
           </div>
         </div>
       </div>
@@ -114,10 +114,6 @@
       <ul id="sough_workspace" class="menu-list">
       </ul>
     </aside>
-    <div class="column">
-      <textarea class="textarea" id="ctext" placeholder="e.g. Hello world"></textarea>
-      <code id="result"></code>
-    </div>
     <div class="column is-fullheight section2" style="overflow-x: hidden;">
       <div id="editor"></div>
     </div>
@@ -131,23 +127,35 @@
   </ul>
 </div>
 
+<div id="qr-modal" class="modal is-clipped">
+  <div class="modal-background"></div>
+  <div class="" style="position: relative">
+    <div class="box" id="result" style="padding: 3px;">
+
+    </div>
+  </div>
+  <button id="qr-modal-close" class="modal-close is-large" aria-label="close"></button>
+</div>
+
 
 <script src="app.js"></script>
 <script src="ace-builds/src-noconflict/ace.js" type="text/javascript"></script>
 <script>
-  var editor = ace.edit("editor");
-  editor.setOptions({
-    showFoldWidgets: false,
-    theme: 'ace/theme/textmate',
-    showGutter: false,
-    displayIndentGuides: false,
-    printMargin: false,
-    fontSize: 15,
-  });
-  // editor.session.setMode("ace/mode/javascript");
+    var editor = ace.edit("editor");
+    editor.setOptions({
+        showFoldWidgets: false,
+        theme: 'ace/theme/textmate',
+        showGutter: false,
+        displayIndentGuides: false,
+        printMargin: false,
+        fontSize: 15,
+    });
+
+
+    // editor.session.setMode("ace/mode/javascript");
 </script>
 <script src="client.js"></script>
-<script src="view.js"></script>
 <script src="qr.js"></script>
+<script src="view.js"></script>
 </body>
 </html>

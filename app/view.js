@@ -4,7 +4,13 @@ $(document).ready(function () {
     showWorkContextMenu(e);
   });
   $(document).click(hideWorkContextmenu);
+  $('.modal-background').click(closeModal);
+  $('#qr-modal-close').click(closeModal);
 });
+
+function closeModal() {
+  $('#qr-modal').removeClass('is-active');
+}
 
 function hideWorkContextmenu() {
   $('#work-contextmenu').css({
@@ -18,4 +24,13 @@ function showWorkContextMenu(e) {
     'left': `${e.pageX}px`,
     'top': `${e.pageY}px`
   });
+}
+
+function shareQR() {
+  makeQR(() => {
+    $('#qr-modal').addClass('is-active');
+  });
+
+
+  // TODO modal 추가
 }
