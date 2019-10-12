@@ -33,6 +33,11 @@ function shareQR() {
   });
 }
 
+function setupWorkspace() {
+
+}
+
+
 var langauge_mode_map = {
   'Javascript': 'javascript',
   'Json': 'json',

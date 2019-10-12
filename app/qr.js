@@ -27,7 +27,7 @@ function compressData(input, callback) {
   Lzma.compress(input, 9, function (result, error) {
     if (error) console.error(error);
     var compressed_result = Buffer.from(result);
-    var encoded_string_result = compressed_result.toString('base64');
+    var encoded_string_result = 'sough:' + compressed_result.toString('base64');
     callback(null, encoded_string_result);
   });
 }
