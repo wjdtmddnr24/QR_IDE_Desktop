@@ -102,8 +102,17 @@
     </div>
   </nav>
   <div class="columns">
-    <aside class="is-fullheight section2 is-unselectable" style="width: 240px;overflow-x: auto">
+    <aside class="is-fullheight section2 is-unselectable" style="width: 240px;overflow-x: auto;">
       <p id="cur_workspace_name" class="menu-label">작업 공간</p>
+      <ul id="" class="menu-list">
+        <li class="">
+          <a style="padding-left: 15px;">
+              <span class="icon is-small" style=" color: Dodgerblue;">
+              <i class="fas fa-plus-circle "></i>
+                </span>&nbsp;추가하기
+          </a>
+        </li>
+      </ul>
       <ul id="sough_workspace" class="menu-list">
       </ul>
     </aside>
@@ -113,10 +122,11 @@
   </div>
 </div>
 
-<div id="work-contextmenu" class="card is-white menu">
+<div id="work-contextmenu" class="card is-white menu context-menu">
   <ul class="menu-list">
-    <li><a><span class="icon"><i class="fas fa-pen"></i></span>&nbsp; 이름 바꾸기</a></li>
-    <li><a><span class="icon"><i class="fas fa-trash-alt"></i></span>&nbsp;&nbsp; 삭제</a></li>
+    <li><a id="work-contextmenu-rename"><span class="icon"><i class="fas fa-pen"></i></span>&nbsp; 이름 바꾸기</a></li>
+    <li><a id="work-contextmenu-delete"><span class="icon"><i class="fas fa-trash-alt"></i></span>&nbsp;&nbsp; 삭제</a>
+    </li>
   </ul>
 </div>
 
@@ -130,22 +140,76 @@
   <button id="qr-modal-close" class="modal-close is-large" aria-label="close"></button>
 </div>
 
+<div id="workspace-modal" class="modal is-clipped is-unselectable">
+  <div class="modal-background"></div>
+  <div class="modal-content" style="width: 300px;">
+    <div class="box" style="padding: 10px;">
+      <p style="margin-bottom: 10px;" class="card-header-title"> 작업공간 설정 </p>
+      <div class="content">
+        <div class="field" style="padding-left: 10px;padding-right: 10px">
+          <div class="control">
+            <input class="input" type="text" id="workspace-input" placeholder="작업공간 이름">
+          </div>
+        </div>
+        <a id="workspace-save" class="button is-info is-inverted" style="margin-left: 168px;">확인</a>
+        <a class="button is-info is-inverted close-modal">취소</a>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div id="work-rename-modal" class="modal is-clipped is-unselectable">
+  <div class="modal-background"></div>
+  <div class="modal-content" style="width: 300px;">
+    <div class="box" style="padding: 10px;">
+      <p style="margin-bottom: 10px;" class="card-header-title"> 이름 바꾸기 </p>
+      <div class="content">
+        <div class="field" style="padding-left: 10px;padding-right: 10px">
+          <div class="control">
+            <input class="input" type="text" id="rename-input" placeholder="작업공간 이름">
+          </div>
+        </div>
+        <a id="rename-ok" class="button is-info is-inverted" style="margin-left: 168px;">확인</a>
+        <a class="button is-info is-inverted close-modal">취소</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
 <script src="app.js"></script>
 <script src="ace-builds/src-noconflict/ace.js" type="text/javascript"></script>
 <script>
-    var editor = ace.edit("editor");
-    editor.setOptions({
-        showFoldWidgets: false,
-        theme: 'ace/theme/textmate',
-        showGutter: false,
-        displayIndentGuides: false,
-        printMargin: false,
-        fontSize: 15,
-    });
+  var editor = ace.edit("editor");
+  editor.setOptions({
+    showFoldWidgets: false,
+    theme: 'ace/theme/textmate',
+    showGutter: false,
+    displayIndentGuides: false,
+    printMargin: false,
+    fontSize: 15,
+  });
+  editor.commands.addCommand({
+    name: 'saveFile',
+    bindKey: {
+      win: 'Ctrl-S',
+      mac: 'Command-S',
+      sender: 'editor|cli'
+    },
+    exec: function (env, args, request) {
+      if (!getCurrentWork()) return;
+      getCurrentWork().content = editor.getValue();
+      saveWork(getCurrentWork(), () => {
+        getCurrentWork().edited = false;
+        redrawWorkspace();
+      })
+    }
+  });
 
+  m_userNames = ['wjdtmddnr24'];
+  m_users = [];
 
-    // editor.session.setMode("ace/mode/javascript");
+  // editor.session.setMode("ace/mode/javascript");
 </script>
 <script src="client.js"></script>
 <script src="qr.js"></script>

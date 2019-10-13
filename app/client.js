@@ -13,20 +13,59 @@ function getCurrentWork() {
   return null;
 }
 
+function getWorkById(id) {
+  for (var i in getUser().workspace) {
+    if (getUser().workspace[i]._id === id) {
+      return getUser().workspace[i];
+    }
+  }
+  return null;
+}
+
+function sendSingleWorkById(id, title, content, callback) {
+  $.ajax({
+    url: `${m_server_addr}/${m_curUserName}/${id}`,
+    method: 'post',
+    dataType: 'json',
+    data: {title: title, content: content},
+    success: (data) => {
+      callback(data);
+    }
+  });
+
+}
 
 function init() {
-  m_userNames = ['wjdtmddnr24'];
   m_curUserName = m_userNames[0];
-  m_users = [];
   for (var i in m_userNames) {
     fetch_workspace(m_userNames[i], true);
   }
+}
+
+function saveWork(work, callback) {
+  if (!work) return;
+  sendSingleWorkById(work._id, work.title, work.content, callback);
+}
+
+function deleteWork(id, callback) {
+  var work = getWorkById(id);
+  if (!work) return;
+  $.ajax({
+    url: `${m_server_addr}/${m_curUserName}/${id}`,
+    method: 'delete',
+    dataType: 'json',
+    data: {},
+    success: (data) => {
+      callback(data);
+    }
+  });
 }
 
 function openWork(idx) {
   for (var i in getUser().workspace) {
     if (getUser().workspace[i].focus) {
       getUser().workspace[i].focus = false;
+      getUser().workspace[i].edited = false;
     }
   }
   getUser().workspace[idx].focus = true;
@@ -34,17 +73,17 @@ function openWork(idx) {
   redrawEditor();
 }
 
-function fetch_workspace(user, overwrite) {
+function fetch_workspace(username, overwrite) {
   $.ajax({
-    url: `${m_server_addr}/${user}`,
+    url: `${m_server_addr}/${username}`,
     dataType: 'json',
     data: {},
     success: (data) => {
       if (overwrite)
-        m_users[user] = data;
+        m_users[username] = data;
       if (m_curUserName === data.id) {
-        invalidateWorkspaceData(data.workspace, true);
-        if (getUser().workspace.length > 0) {
+        invalidateWorkspaceData(data.workspace, false);
+        if (overwrite && getUser().workspace.length > 0) {
           openWork(0);
         }
         redrawWorkspace();
@@ -52,7 +91,6 @@ function fetch_workspace(user, overwrite) {
     }
   });
 }
-
 
 function invalidateWorkspaceData(workspace, overwrite) {
   if (overwrite) {
@@ -86,12 +124,12 @@ function redrawWorkspace() {
   $('#cur_workspace_name').text(`${m_curUserName}의 작업공간`);
   $('#sough_workspace li').remove();
   $.each(getUser().workspace, function (index, work) {
-    $('#sough_workspace').append(
-      `<li><a href="javascript:openWork(${index})" class="sough-work ${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}</a></li>`
-    );
-  });
+      $('#sough_workspace').append(
+        `<li><a href="javascript:openWork(${index})" id="${work._id}" class="sough-work ${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}${work.edited ? '*' : ''}</a></li>`
+      );
+    }
+  );
 }
-
 
 function redrawEditor() {
   editor.setValue(getCurrentWork().content, -1);
