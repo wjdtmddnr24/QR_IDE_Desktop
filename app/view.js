@@ -23,6 +23,9 @@ $(document).ready(function () {
     getCurrentWork().edited = (getCurrentWork().content !== editor.getValue());
     redrawWorkspace();
   });
+  // init();
+  setupWorkspace('local');
+
 });
 
 function closeModal() {
@@ -67,7 +70,6 @@ function renameWork(id) {
     getWorkById(id).title = name;
     sendSingleWorkById(id, name, work.content, () => {
       closeModal();
-      //TODO refetch workspace
       fetch_workspace(m_curUserName, false);
     });
   });
@@ -80,9 +82,9 @@ function shareQR() {
 }
 
 
-function setupWorkspace() {
+function setupWorkspace(name) {
   $('#workspace-modal').addClass('is-active');
-  $('#workspace-input').val(m_curUserName);
+  $('#workspace-input').val(name ? name : m_curUserName);
 }
 
 

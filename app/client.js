@@ -32,14 +32,34 @@ function sendSingleWorkById(id, title, content, callback) {
       callback(data);
     }
   });
+}
 
+function sendSingleWork(title, content, callback) {
+  $.ajax({
+    url: `${m_server_addr}/${m_curUserName}`,
+    method: 'post',
+    dataType: 'json',
+    data: {title: title, content: content},
+    success: (data) => {
+      callback(data);
+    }
+  });
 }
 
 function init() {
+  if (update) clearInterval(update);
+  updateWorkspace();
   m_curUserName = m_userNames[0];
   for (var i in m_userNames) {
     fetch_workspace(m_userNames[i], true);
   }
+}
+
+function addWork() {
+  var date = new Date();
+  sendSingleWork(`sough-${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}`, '', () => {
+    fetch_workspace(m_curUserName, false);
+  });
 }
 
 function saveWork(work, callback) {
@@ -100,6 +120,8 @@ function invalidateWorkspaceData(workspace, overwrite) {
     }
     return;
   }
+
+
   var i = 0, j = 0;
   for (; j < workspace.length; j++) {
     if (i >= getUser().workspace.length)
@@ -121,6 +143,8 @@ function invalidateWorkspaceData(workspace, overwrite) {
 }
 
 function redrawWorkspace() {
+
+
   $('#cur_workspace_name').text(`${m_curUserName}의 작업공간`);
   $('#sough_workspace li').remove();
   $.each(getUser().workspace, function (index, work) {
@@ -135,8 +159,10 @@ function redrawEditor() {
   editor.setValue(getCurrentWork().content, -1);
 }
 
-$(document).ready(function () {
-  init();
-});
+function updateWorkspace() {
+  update = setInterval(() => {
+    fetch_workspace(m_curUserName, false);
+  }, 1000);
+}
 
 
