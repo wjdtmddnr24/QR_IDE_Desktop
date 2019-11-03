@@ -12,8 +12,8 @@ $(document).ready(function () {
 
 
   $('#workspace-save').on('click', () => {
-    m_userNames[0] = $('#workspace-input').val();
-    init();
+    m_curUserName = $('#workspace-input').val();
+    initWorkspace();
     closeModal();
   });
   $(`#text`).addClass('is-active');
@@ -23,7 +23,8 @@ $(document).ready(function () {
     getCurrentWork().edited = (getCurrentWork().content !== editor.getValue());
     redrawWorkspace();
   });
-  // init();
+
+  $('#workspace-input').keydown(setupWorkspaceKeyDown);
   setupWorkspace('local');
 
 });
@@ -51,7 +52,11 @@ function showWorkContextMenu(e) {
 
   $('#work-contextmenu-delete').unbind('click').on('click', () => {
     deleteWork(id, () => {
-      fetch_workspace(m_curUserName, true);
+      fetch_workspace(m_curUserName, () => {
+        if (m_userData && m_userData.workspace.length > 0) {
+          openWork(0);
+        }
+      });
     });
   });
 
@@ -70,9 +75,21 @@ function renameWork(id) {
     getWorkById(id).title = name;
     sendSingleWorkById(id, name, work.content, () => {
       closeModal();
-      fetch_workspace(m_curUserName, false);
+      fetch_workspace(m_curUserName);
     });
   });
+  $('#rename-input').keydown((event) => {
+    if (event.keyCode == 13) {
+      var name = $('#rename-input').val();
+      getWorkById(id).title = name;
+      sendSingleWorkById(id, name, work.content, () => {
+        closeModal();
+        fetch_workspace(m_curUserName);
+      });
+    }
+  });
+
+
 }
 
 function shareQR() {
@@ -87,6 +104,22 @@ function setupWorkspace(name) {
   $('#workspace-input').val(name ? name : m_curUserName);
 }
 
+
+function setupRenameKeyDown(event) {
+  if (event.keyCode == 13) {
+    m_curUserName = $('#workspace-input').val();
+    initWorkspace();
+    closeModal();
+  }
+}
+
+function setupWorkspaceKeyDown(event) {
+  if (event.keyCode == 13) {
+    m_curUserName = $('#workspace-input').val();
+    initWorkspace();
+    closeModal();
+  }
+}
 
 var langauge_mode_map = {
   'Javascript': 'javascript',
@@ -106,3 +139,4 @@ function setMode(event) {
   $('.sough-language-item-title').text(element.text());
   editor.session.setMode(`ace/mode/${id}`);
 }
+

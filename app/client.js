@@ -1,22 +1,22 @@
-const m_server_addr = 'http://chocola.moe:3000';
-
-function getUser() {
-  return m_users[m_curUserName];
-}
+// const m_server_addr = 'http://chocola.moe:3000';
+// const m_server_addr = 'http://localhost:3000';
+const m_server_addr = 'http://mansuiki.com:3000';
 
 function getCurrentWork() {
-  for (var i in getUser().workspace) {
-    if (getUser().workspace[i].focus) {
-      return getUser().workspace[i];
+  var ret = null;
+  if (m_focus_work_id)
+    for (var i in m_userData.workspace) {
+      if (m_userData.workspace[i]._id === m_focus_work_id) {
+        return m_userData.workspace[i];
+      }
     }
-  }
-  return null;
+  return ret;
 }
 
 function getWorkById(id) {
-  for (var i in getUser().workspace) {
-    if (getUser().workspace[i]._id === id) {
-      return getUser().workspace[i];
+  for (var i in m_userData.workspace) {
+    if (m_userData.workspace[i]._id === id) {
+      return m_userData.workspace[i];
     }
   }
   return null;
@@ -46,19 +46,20 @@ function sendSingleWork(title, content, callback) {
   });
 }
 
-function init() {
+function initWorkspace() {
   if (update) clearInterval(update);
-  updateWorkspace();
-  m_curUserName = m_userNames[0];
-  for (var i in m_userNames) {
-    fetch_workspace(m_userNames[i], true);
-  }
+  fetch_workspace(m_curUserName, () => {
+    if (m_userData && m_userData.workspace.length > 0) {
+      openWork(0);
+    }
+    updateWorkspace();
+  });
 }
 
 function addWork() {
   var date = new Date();
-  sendSingleWork(`sough-${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}`, '', () => {
-    fetch_workspace(m_curUserName, false);
+  sendSingleWork(`sough-${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`, '', () => {
+    fetch_workspace(m_curUserName);
   });
 }
 
@@ -82,74 +83,35 @@ function deleteWork(id, callback) {
 }
 
 function openWork(idx) {
-  for (var i in getUser().workspace) {
-    if (getUser().workspace[i].focus) {
-      getUser().workspace[i].focus = false;
-      getUser().workspace[i].edited = false;
-    }
-  }
-  getUser().workspace[idx].focus = true;
+  m_focus_work_id = m_userData.workspace[idx]._id;
   redrawWorkspace();
   redrawEditor();
 }
 
-function fetch_workspace(username, overwrite) {
+function fetch_workspace(username, callback) {
   $.ajax({
     url: `${m_server_addr}/${username}`,
     dataType: 'json',
     data: {},
     success: (data) => {
-      if (overwrite)
-        m_users[username] = data;
-      if (m_curUserName === data.id) {
-        invalidateWorkspaceData(data.workspace, false);
-        if (overwrite && getUser().workspace.length > 0) {
-          openWork(0);
-        }
-        redrawWorkspace();
-      }
+      m_online = true;
+      m_userData = data;
+      redrawWorkspace();
+      if (callback) callback(data);
+    },
+    error: () => {
+      m_online = false;
     }
   });
 }
 
-function invalidateWorkspaceData(workspace, overwrite) {
-  if (overwrite) {
-    getUser().workspace = [];
-    for (var i in workspace) {
-      getUser().workspace.push(workspace[i]);
-    }
-    return;
-  }
-
-
-  var i = 0, j = 0;
-  for (; j < workspace.length; j++) {
-    if (i >= getUser().workspace.length)
-      break;
-    if (getUser().workspace[i]._id === workspace[j]._id) {
-      getUser().workspace[i].title = workspace[j].title;
-      getUser().workspace[i].content = workspace[j].content;
-      i++;
-    } else {
-      getUser().workspace.splice(i + 1, 0, workspace[j]);
-    }
-  }
-  if (j < workspace.length) {
-    while (j < workspace.length) {
-      getUser().workspace.push(workspace[j]);
-      j++;
-    }
-  }
-}
 
 function redrawWorkspace() {
-
-
   $('#cur_workspace_name').text(`${m_curUserName}의 작업공간`);
   $('#sough_workspace li').remove();
-  $.each(getUser().workspace, function (index, work) {
+  $.each(m_userData.workspace, function (index, work) {
       $('#sough_workspace').append(
-        `<li><a href="javascript:openWork(${index})" id="${work._id}" class="sough-work ${work.focus ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}${work.edited ? '*' : ''}</a></li>`
+        `<li><a href="javascript:openWork(${index})" id="${work._id}" class="sough-work ${m_focus_work_id === work._id ? 'is-active' : ''}" style="word-wrap:break-word;"><span class="icon"><i class="fas fa-cloud"></i></span>&nbsp;${work.title}${m_focus_work_id === work._id && editor.getValue() !== work.content ? '*' : ''}</a></li>`
       );
     }
   );
@@ -161,7 +123,7 @@ function redrawEditor() {
 
 function updateWorkspace() {
   update = setInterval(() => {
-    fetch_workspace(m_curUserName, false);
+    fetch_workspace(m_curUserName);
   }, 1000);
 }
 

@@ -104,6 +104,8 @@
   <div class="columns">
     <aside class="is-fullheight section2 is-unselectable" style="width: 240px;overflow-x: auto;">
       <p id="cur_workspace_name" class="menu-label">작업 공간</p>
+      <ul id="sough_workspace" class="menu-list">
+      </ul>
       <ul id="" class="menu-list">
         <li class="">
           <a style="padding-left: 15px;" href="javascript:addWork()">
@@ -113,16 +115,14 @@
           </a>
         </li>
       </ul>
-      <ul id="sough_workspace" class="menu-list">
-      </ul>
     </aside>
-    <div class="column is-fullheight section2 is-unselectable" style="overflow-x: hidden;">
+    <div class="column is-fullheight section2 is-unselectable" style="overflow-x: hidden;padding:10px;">
       <div id="editor"></div>
     </div>
   </div>
 </div>
 
-<div id="work-contextmenu" class="card is-white menu context-menu">
+<div id="work-contextmenu" class="card is-white menu context-menu is-unselectable">
   <ul class="menu-list">
     <li><a id="work-contextmenu-rename"><span class="icon"><i class="fas fa-pen"></i></span>&nbsp; 이름 바꾸기</a></li>
     <li><a id="work-contextmenu-delete"><span class="icon"><i class="fas fa-trash-alt"></i></span>&nbsp;&nbsp; 삭제</a>
@@ -148,7 +148,7 @@
       <div class="content">
         <div class="field" style="padding-left: 10px;padding-right: 10px">
           <div class="control">
-            <input class="input" type="text" id="workspace-input" placeholder="작업공간 이름">
+            <input class="input" type="text" id="workspace-input" placeholder="작업공간 이름" >
           </div>
         </div>
         <a id="workspace-save" class="button is-info is-inverted" style="margin-left: 168px;">확인</a>
@@ -183,7 +183,7 @@
   var editor = ace.edit("editor");
   editor.setOptions({
     showFoldWidgets: false,
-    theme: 'ace/theme/textmate',
+    theme: 'ace/theme/crimson_editor',
     showGutter: false,
     displayIndentGuides: false,
     printMargin: false,
@@ -207,9 +207,11 @@
   });
 
 
-  m_userNames = ['wjdtmddnr24'];
-  m_users = [];
-  update = null;
+  var m_curUserName = 'local';
+  var m_userData = null;
+  var update = null;
+  var m_online = false;
+  var m_focus_work_id = null;
   // editor.session.setMode("ace/mode/javascript");
 </script>
 <script src="client.js"></script>
