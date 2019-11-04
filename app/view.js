@@ -78,7 +78,7 @@ function renameWork(id) {
       fetch_workspace(m_curUserName);
     });
   });
-  $('#rename-input').keydown((event) => {
+  $('#rename-input').unbind('keydown').keydown((event) => {
     if (event.keyCode == 13) {
       var name = $('#rename-input').val();
       getWorkById(id).title = name;
