@@ -89,6 +89,9 @@
             </a>
           </div>
         </div>
+        <a class="navbar-item" href="javascript:setupRun()">
+          코드 실행
+        </a>
       </div>
       <div class="navbar-end">
         <div class="navbar-item">
@@ -148,7 +151,7 @@
       <div class="content">
         <div class="field" style="padding-left: 10px;padding-right: 10px">
           <div class="control">
-            <input class="input" type="text" id="workspace-input" placeholder="작업공간 이름" >
+            <input class="input" type="text" id="workspace-input" placeholder="작업공간 이름">
           </div>
         </div>
         <a id="workspace-save" class="button is-info is-inverted" style="margin-left: 168px;">확인</a>
@@ -175,6 +178,42 @@
     </div>
   </div>
 </div>
+
+<div id="code-run-modal" class="modal is-clipped is-unselectable">
+  <div class="modal-background"></div>
+  <div class="modal-content" style="width: 800px;">
+    <div class="box" style="padding: 10px;">
+      <p style="margin-bottom: 10px;" class="card-header-title"> C/C++ 코드 실행 </p>
+      <p style="margin-bottom: 10px;" class="">&nbsp;&nbsp;&nbsp;C/C++로 작성된 코드를 컴파일 및 실행할 수 있습니다.</p>
+      <br>
+      <div class="content">
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <div class="control">
+                <textarea id="run-input" class="textarea is-info" placeholder="stdin 데이터를 입력하세요"
+                          style="height: 190px;"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <div id="output-control" class="control ">
+                <textarea id="run-output" class="textarea is-warning" placeholder="이곳에 결과가 출력됩니다."
+                          style="height: 190px;"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <a id="run-ok" class="button is-info " href="javascript:runCode()" style="margin-left: 664px;">실행</a>
+        <a class="button is-info is-inverted close-modal">닫기</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 </div>
 <script src="app.js"></script>
@@ -210,8 +249,12 @@
   var m_curUserName = 'local';
   var m_userData = null;
   var update = null;
+  var update_run = null;
+  var m_running = false;
   var m_online = false;
   var m_focus_work_id = null;
+  var m_runId = null;
+
   // editor.session.setMode("ace/mode/javascript");
 </script>
 <script src="client.js"></script>

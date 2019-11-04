@@ -104,6 +104,24 @@ function setupWorkspace(name) {
   $('#workspace-input').val(name ? name : m_curUserName);
 }
 
+function setupRun(name) {
+  $('#code-run-modal').addClass('is-active');
+
+}
+
+function runCode() {
+  if (m_running) return;
+  m_running = true;
+  const code = editor.getValue();
+  const input = $('#run-input').val();
+  $('#output-control').addClass('is-loading');
+  sendCodeToRun(code, input, (data) => {
+    m_runId = data;
+    updateRun();
+  });
+
+}
+
 
 function setupRenameKeyDown(event) {
   if (event.keyCode == 13) {

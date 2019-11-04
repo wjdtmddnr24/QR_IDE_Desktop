@@ -13,6 +13,34 @@ function getCurrentWork() {
   return ret;
 }
 
+
+function sendCodeToRun(code, input, callback) {
+
+  $.ajax({
+    url: `${m_server_addr}/make`,
+    method: 'post',
+    dataType: 'json',
+    data: {code: code, input: input},
+    success: (data) => {
+      callback(data);
+    }
+  });
+
+}
+
+function fetchRun(id) {
+  $.ajax({
+    url: `${m_server_addr}/make/${id}`,
+    dataType: 'json',
+    data: {},
+    success: (data) => {
+      m_runId = data;
+    },
+    error: () => {
+    }
+  });
+}
+
 function getWorkById(id) {
   for (var i in m_userData.workspace) {
     if (m_userData.workspace[i]._id === id) {
@@ -125,6 +153,44 @@ function updateWorkspace() {
   update = setInterval(() => {
     fetch_workspace(m_curUserName);
   }, 1000);
+}
+
+
+function updateRun() {
+  update_run = setInterval(() => {
+    if (!m_runId || m_runId.result !== 0) {
+      if (m_runId.result !== 0) {
+        $('#output-control').removeClass('is-loading');
+        if (m_runId.output.stdout) {
+          $('#run-output').val(m_runId.output.stdout);
+        } else {
+          $('#run-output').val(m_runId.output.stderr);
+        }
+      }
+
+      /*
+      * {
+    "output": {
+        "stdout": "1432",
+        "stderr": ""
+    },
+    "result": 1,
+    "input": "1332",
+    "_id": "5dbfeb750b6f231b5c2bde51",
+    "code": "#include<stdio.h>\nint main(){\nint a;\nscanf(\"%d\",&a); printf(\"%d\",a+100);\nreturn 0;\n}",
+    "created": "2019-11-04T09:12:21.261Z",
+    "__v": 0
+}*/
+
+      m_running = false;
+      clearInterval(update_run);
+      update_run = null;
+      return;
+    }
+    fetchRun(m_runId._id);
+  }, 1000);
+
+
 }
 
 
